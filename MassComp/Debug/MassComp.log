@@ -1,0 +1,47 @@
+﻿生成启动时间为 2017/11/8 20:01:08。
+     1>项目“D:\visual studio2012\MassComp\MassComp\MassComp.vcxproj”在节点 2 上(Rebuild 个目标)。
+     1>ClCompile:
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp tinyxml2.cpp
+         tinyxml2.cpp
+         main.cpp
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(72): warning C4244: “初始化”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(93): warning C4244: “=”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(94): warning C4244: “=”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(155): warning C4244: “=”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(156): warning C4244: “=”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(253): warning C4244: “=”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(274): warning C4244: “初始化”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(302): warning C4244: “=”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(303): warning C4244: “=”: 从“double”转换到“uint64_t”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(413): warning C4244: “+=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(414): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1018): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : 参见“fopen”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1089): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(218) : 参见“fopen”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1115): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1116): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : 参见“strcat”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1117): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : 参见“strcat”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1120): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(110) : 参见“strcpy”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1121): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : 参见“strcat”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1122): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : 参见“strcat”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1123): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\string.h(115) : 参见“strcat”的声明
+     1>d:\visual studio2012\masscomp\masscomp\main.cpp(1292): warning C4996: 'getcwd': The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _getcwd. See online help for details.
+                 d:\program files (x86)\microsoft visual studio 11.0\vc\include\direct.h(130) : 参见“getcwd”的声明
+         正在生成代码...
+       Link:
+         D:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\visual studio2012\MassComp\Debug\MassComp.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\visual studio2012\MassComp\Debug\MassComp.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\visual studio2012\MassComp\Debug\MassComp.lib" /MACHINE:X86 Debug\main.obj
+         Debug\tinyxml2.obj
+         MassComp.vcxproj -> D:\visual studio2012\MassComp\Debug\MassComp.exe
+     1>已完成生成项目“D:\visual studio2012\MassComp\MassComp\MassComp.vcxproj”(Rebuild 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:06.81
