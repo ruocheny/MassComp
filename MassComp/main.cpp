@@ -1065,7 +1065,7 @@ void FPMSDecomp(std::string input_path ,std::string output_folder)
 	strcat(decompress_path,".mzxml");
 	*/
 
-	
+
 	std::string path_pairs = input_path;
 
 	std::size_t pos_last = input_path.find_last_of("\\");
@@ -1073,7 +1073,7 @@ void FPMSDecomp(std::string input_path ,std::string output_folder)
 	std::string filename = input_path.substr(pos_last+17,pos_ext-4-pos_last-16);
 	std::string compressed_folder = input_path.substr(0,pos_last);
 	std::string path_struct = compressed_folder + "\\" + "Struct_" + filename + ".xml";
-	
+
 	std::string path_decompress = "." + output_folder + "\\" + "Decompressed_" + filename + ".mzXML";
 
 	XMLDocument doc;
@@ -1187,36 +1187,34 @@ void CompCmp(char * folder_in,char * folder_out,char * filename)
 int main()
 { 	
 
-	/*	comp	
+	/*	comp	*/
 
 	system("dir/s/b *.mzXML > mzXML_dir.txt");
 	// input the MassIVE id
 	std::string input_folder_path;
-	std::string var[3] = {
-		//"\\input\\MSV000080896\\peak\\Data_mzXML",
-		//"\\input\\MSV000080905\\mzXML\\Plate1",
-		//"\\input\\MSV000080905\\mzXML\\Plate2"};
-		//"\\input\\MSV000080905\\mzXML\\Plate3",
-		"\\input\\MSV000080905\\mzXML\\Plate4",
-		"\\input\\MSV000081123\\peaks"};
+	//std::string var[3] = {
+	//"\\input\\MSV000080896\\peak\\Data_mzXML",
+	//"\\input\\MSV000080905\\mzXML\\Plate1",
+	//"\\input\\MSV000080905\\mzXML\\Plate2"};
+	//"\\input\\MSV000080905\\mzXML\\Plate3",
+	//"\\input\\MSV000080905\\mzXML\\Plate4",
+	//"\\input\\MSV000081123\\peaks"};
 	// \input\MSV000080905\mzXML\Plate2
 	// \input\MSV000080905\mzXML\Plate3
 	// \input\MSV000080905\mzXML\Plate4
 	// \input\MSV000081123\peaks};
-	//std::cout<<"please input the file path: "<<std::endl;
-	//std::cin>>input_folder_path;
-	
-
-	clock_t start,finish;
-	double totaltime;
+	std::cout<<"please input the file path: "<<std::endl;
+	std::cin>>input_folder_path;
 
 
-	for(int j=1;j<3;j++)
-	{
-		input_folder_path = var[j];
+	//clock_t start,finish;
+	//double totaltime;
 
 
-		start=clock();
+
+
+
+	//start=clock();
 
 	std::ifstream fpdir;
 	fpdir.open("mzXML_dir.txt");
@@ -1248,72 +1246,68 @@ int main()
 	}
 	fpdir.close();
 
-	finish=clock();
-	totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
-	std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
+	//finish=clock();
+	//totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
+	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
 
 
-	}
 
-	*/
+
 
 	/*	decomp	*/
-	
+
 	system("dir/s/b *.bin > decomp_dir.txt");
-		// input the MassIVE id
-	std::string input_folder_path;
-	std::string var[6] = {
-		"\\output\\input\\MSV000080896\\peak\\Data_mzXML",
-		"\\output\\input\\MSV000080905\\mzXML\\Plate1",
-		"\\output\\input\\MSV000080905\\mzXML\\Plate2",
-		"\\output\\input\\MSV000080905\\mzXML\\Plate3",
-		"\\output\\input\\MSV000080905\\mzXML\\Plate4",
-		"\\output\\input\\MSV000081123\\peaks"};
-	
-	
-
-	clock_t start,finish;
-	double totaltime;
+	// input the MassIVE id
+	std::string de_input_folder_path;
+	//std::string var[6] = {
+	//"\\output\\input\\MSV000080896\\peak\\Data_mzXML",
+	//"\\output\\input\\MSV000080905\\mzXML\\Plate1",
+	//"\\output\\input\\MSV000080905\\mzXML\\Plate2",
+	//"\\output\\input\\MSV000080905\\mzXML\\Plate3",
+	//"\\output\\input\\MSV000080905\\mzXML\\Plate4",
+	//"\\output\\input\\MSV000081123\\peaks"};
 
 
-	for(int j=0;j<6;j++)
-	{
-		input_folder_path = var[j];
+
+	//clock_t start,finish;
+	//double totaltime;
 
 
-		start=clock();
 
-	std::ifstream fpdir;
-	fpdir.open("decomp_dir.txt");
-	std::string file_path;
+
+
+	//start=clock();
+
+	std::ifstream de_fpdir;
+	de_fpdir.open("decomp_dir.txt");
+	//std::string file_path;
 
 	// create output folder
-	char proj_path[MAX_PATH];   
-	getcwd(proj_path,MAX_PATH);
+	char de_proj_path[MAX_PATH];   
+	getcwd(de_proj_path,MAX_PATH);
 	//std::string output_folder = proj_path;
-	std::string output_folder = "\\decompress" + input_folder_path;
-	std::string create_path_cmd = "md ." + output_folder;
+	std::string de_output_folder = "\\decompress" + de_input_folder_path;
+	std::string de_create_path_cmd = "md ." + de_output_folder;
 	//std::string create_path_cmd = "mkdir -p" + output_folder;
-	system(create_path_cmd.c_str());
+	system(de_create_path_cmd.c_str());
 
 
 	// find mzXML files corresponding with MassIVE id
 	for(int i=0;!fpdir.eof();i++)
 	{
 		getline(fpdir,file_path);
-		std::size_t pos = file_path.find(input_folder_path);
+		std::size_t pos = file_path.find(de_input_folder_path);
 		if(pos == std::string::npos)// not this massIVE id
 			continue;
-		FPMSDecomp(file_path,output_folder);
+		FPMSDecomp(file_path,de_output_folder);
 	}
-	fpdir.close();
+	de_fpdir.close();
 
-	finish=clock();
-	totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
-	std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
+	//finish=clock();
+	//totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
+	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
 
 
-	}
 
 
 	return 0;
