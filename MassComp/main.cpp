@@ -1004,7 +1004,7 @@ void FPMSComp(std::string input_path, std::string output_folder)
 
 
 
-	//std::cout<<"start compressing"<<std::endl<<input_path<<std::endl;
+	std::cout<<"start compressing"<<input_path<<std::endl;
 
 	XMLDocument doc;
 	XMLError eResult = doc.LoadFile(input_path.c_str());
@@ -1039,7 +1039,7 @@ void FPMSComp(std::string input_path, std::string output_folder)
 
 	fclose((fpW));
 
-	//std::cout<<"end compressing"<<std::endl<<std::endl;
+	std::cout<<"end compressing"<<std::endl;
 
 }
 
@@ -1089,7 +1089,7 @@ void FPMSDecomp(std::string input_path ,std::string output_folder)
 	fpR = fopen(path_pairs.c_str(),"rb");
 	fread(&scanCount,sizeof(int),1,fpR);
 
-	std::cout<<std::endl<<"start decompressing"<<std::endl;
+	std::cout<<std::endl<<"start decompressing"<<input_path<<std::endl;
 	for(int i=0;i<scanCount;i++)
 	{
 		scan ->QueryIntAttribute("peaksCount",&peaksCount);
@@ -1101,8 +1101,7 @@ void FPMSDecomp(std::string input_path ,std::string output_folder)
 		//std::cout<<i<<" ";
 	}
 
-	//std::cout<<std::endl;
-	//std::cout<<"end decompressing"<<std::endl;
+	std::cout<<"end decompressing"<<std::endl;
 
 	doc.SaveFile(path_decompress.c_str());
 	fclose(fpR);
@@ -1189,23 +1188,19 @@ int main()
 
 	/*	comp	*/
 
+
 	system("dir/s/b *.mzXML > mzXML_dir.txt");
 	// input the MassIVE id
 	std::string input_folder_path;
-	//std::string var[3] = {
-	//"\\input\\MSV000080896\\peak\\Data_mzXML",
-	//"\\input\\MSV000080905\\mzXML\\Plate1",
-	//"\\input\\MSV000080905\\mzXML\\Plate2"};
-	//"\\input\\MSV000080905\\mzXML\\Plate3",
-	//"\\input\\MSV000080905\\mzXML\\Plate4",
-	//"\\input\\MSV000081123\\peaks"};
+	//input_folder_path = "\\MSV000080896\\peak\\Data_mzXML";
+	// \MSV000080896\peak\Data_mzXML
 	// \input\MSV000080905\mzXML\Plate2
 	// \input\MSV000080905\mzXML\Plate3
 	// \input\MSV000080905\mzXML\Plate4
 	// \input\MSV000081123\peaks};
-	std::cout<<"please input the file path: "<<std::endl;
+	std::cout<<"please input the path of files to compressing: "<<std::endl;
 	std::cin>>input_folder_path;
-
+	std::cout<<"start compressing folder "<<input_folder_path<<std::endl;
 
 	//clock_t start,finish;
 	//double totaltime;
@@ -1250,15 +1245,19 @@ int main()
 	//totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
 	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
 
+	std::cout<<"end compressing folder "<<input_folder_path<<std::endl<<std::endl;
 
-
-
+	
 
 	/*	decomp	*/
 
 	system("dir/s/b *.bin > decomp_dir.txt");
 	// input the MassIVE id
 	std::string de_input_folder_path;
+	//de_input_folder_path = "\\output\\MSV000080896\\peak\\Data_mzXML";
+	std::cout<<"please input the path of files to decompressing: "<<std::endl;
+	std::cin>>de_input_folder_path;
+	std::cout<<"start decompressing folder "<<de_input_folder_path<<std::endl;
 	//std::string var[6] = {
 	//"\\output\\input\\MSV000080896\\peak\\Data_mzXML",
 	//"\\output\\input\\MSV000080905\\mzXML\\Plate1",
@@ -1293,9 +1292,9 @@ int main()
 
 
 	// find mzXML files corresponding with MassIVE id
-	for(int i=0;!fpdir.eof();i++)
+	for(int i=0;!de_fpdir.eof();i++)
 	{
-		getline(fpdir,file_path);
+		getline(de_fpdir,file_path);
 		std::size_t pos = file_path.find(de_input_folder_path);
 		if(pos == std::string::npos)// not this massIVE id
 			continue;
@@ -1307,8 +1306,8 @@ int main()
 	//totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
 	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
 
-
-
+	std::cout<<"end decompressing folder "<<de_input_folder_path<<std::endl;
+	
 
 	return 0;
 }
