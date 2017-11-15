@@ -21,5 +21,8 @@ With the hint "please input the path of files to be decompressing:", input the f
 ## Datasets
 Datasets of mass spectrometry data can be downloaded from MassIVE https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp
 
+## Authors
+MassComp was created by Ruochen Yang and Idoia Ochoa at University of Illinois at Urbana-Champaign.
+
 ## Contact
 If you have any problem, please email me at rcyang624@126.com
