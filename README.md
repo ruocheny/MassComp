@@ -8,15 +8,20 @@ MassComp is a loseless compressor for mass spectrometry data. It compresses the 
 Download the full project.
 
 ## Run MassComp
-## Linux system
-// compile
-g++ -o masscomp MassComp.cpp tinyxml2.cpp
-// to compress
-./masscomp -c fileOri.mzXML fileMasscomp
-// to decompress
-./masscomp -d fileMasscomp fileDecomp.mzXML
+### Linux system
+To compile:
 
-## Windows system
+`g++ -o masscomp MassComp.cpp tinyxml2.cpp`
+
+To compress:
+
+`./masscomp -c fileOri.mzXML fileMasscomp`
+
+To decompress
+
+`./masscomp -d fileMasscomp fileDecomp.mzXML`
+
+### Windows system
 Current implementation of the code can be run by visual studio on windows system (we will provide a Linux and Mac implementation shortly).
 
 Here's an example of this. Folder 'MSV000080896' is downloaded from MassIVE with id MSV000080896 and contains two mzXML files.
