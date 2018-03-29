@@ -2120,6 +2120,8 @@ static FILE* callfopen( const char* filepath, const char* mode )
 #if defined(_MSC_VER) && (_MSC_VER >= 1400 ) && (!defined WINCE)
     FILE* fp = 0;
     errno_t err = fopen_s( &fp, filepath, mode );
+	//FILE* fp = fopen64(filepath, mode);
+	
     if ( err ) {
         return 0;
     }
@@ -2194,7 +2196,7 @@ XMLError XMLDocument::LoadFile( FILE* fp )
     }
 
     fseek( fp, 0, SEEK_END );
-    const long filelength = ftell( fp );
+	__int64 filelength = _ftelli64(fp);
     fseek( fp, 0, SEEK_SET );
     if ( filelength == -1L ) {
         SetError( XML_ERROR_FILE_READ_ERROR, 0, 0, 0 );

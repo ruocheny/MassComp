@@ -1,0 +1,10 @@
+C:\MassComp-master\MassComp\decompressoutputMSV000080896\Decompressed_MHB+Naf_1_T0_GA4_01_9118.mzXML
+C:\MassComp-master\MassComp\decompressoutputMSV000080896\Decompressed_MHB+Naf_1_T2_GB4_01_9122.mzXML
+C:\MassComp-master\MassComp\decompressoutputsample0\Decompressed_110620_fract_scxB05.mzXML
+C:\MassComp-master\MassComp\MSV000080896\peak\Data_mzXML\MHB+Naf_1_T0_GA4_01_9118.mzXML
+C:\MassComp-master\MassComp\MSV000080896\peak\Data_mzXML\MHB+Naf_1_T2_GB4_01_9122.mzXML
+C:\MassComp-master\MassComp\sample1\120224_006_SW-400AQUA no background 2ul dilution 5.mzXML
+C:\MassComp-master\MassComp\sample2\121213_PhosphoMRM_TiO2_discovery.mzXML
+C:\MassComp-master\MassComp\sample3\Velos_120905_09.mzXML
+C:\MassComp-master\MassComp\sample4\sample4.mzXML
+C:\MassComp-master\MassComp\small\110620_fract_scxB05.mzXML

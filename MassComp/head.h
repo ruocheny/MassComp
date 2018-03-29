@@ -5,6 +5,9 @@ Ruochen Yang
 email: rcyang624@126.com
 */
 
+
+#define _FILE_OFFSET_BITS 64
+
 #include <iostream>
 #include <fstream>
 #include <ostream>
@@ -31,11 +34,12 @@ email: rcyang624@126.com
 using namespace tinyxml2;
 
 
-
+bool doubleprecision;
 
 namespace Comp
 {
-	void pairsComp(FILE * fpW,XMLElement * peaks);
+	void pairsComp(FILE * fpW, XMLElement * peaks);
+	void pairsComp64(FILE * fpW, XMLElement * peaks);
 
 	int match_type;
 	// mz
@@ -44,10 +48,14 @@ namespace Comp
 	int * zero_len;
 	int * diff_reshape;
 	uint8_t * diff_reshape_byte;
+	int max_zero = 0;
 	int diff_reshape_len;
 	int diff[8];
+	int diff64[16];
 	int cnt;
+	int back_cnt;
 	bool flag_cnt_zero;
+	bool flag_back_zero;
 	// intensity
 	int * this_intensity_hex;
 	int * find_intensity_hex;
@@ -69,6 +77,7 @@ namespace Comp
 namespace DeComp
 {
 	void pairsDecomp(FILE ** fp, XMLElement * scan, XMLDocument * doc);
+	void pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc);
 	
 	int pairs_len;
 	int range;
