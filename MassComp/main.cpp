@@ -1107,9 +1107,9 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 	input_bitstream = new uint8_t[input_len];
 	fread(input_bitstream, sizeof(uint8_t), input_len, *fp);
 
-	zero_len = new int[pairs_len / 2];
+	zero_len = new int[pairs_len];
 	DeComp::arithmeticDecoder(input_bitstream, input_len,
-		range, cum_cnt, zero_len, pairs_len / 2);
+		range, cum_cnt, zero_len, pairs_len);
 	fread(&diff_reshape_len, sizeof(int), 1, *fp);
 	uint8_t * diff_reshape = new uint8_t[(int)ceil((double)diff_reshape_len / 2)];
 	fread(diff_reshape, sizeof(uint8_t), (int)ceil((double)diff_reshape_len / 2), *fp);
@@ -1169,12 +1169,18 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 			diff_hex[j] = 0;
 			this_mz_hex[j] = (diff_hex[j] + last_mz_hex[j]) % 16;
 		}
-		for (int j = zero_len[i]; j<16; j++)
+
+		for (int j = 0; j<zero_len[pairs_len / 2 + i]; j++)
+		{
+			diff_hex[15 - j] = 0;
+			this_mz_hex[15 - j] = (diff_hex[15 - j] + last_mz_hex[15 - j]) % 16;
+		}
+		for (int j = zero_len[i]; j<16 - zero_len[pairs_len/2+i]; j++)
 		{
 			diff_hex[j] = diff_reshape_hex[pos + j - zero_len[i]];
 			this_mz_hex[j] = (diff_hex[j] + last_mz_hex[j]) % 16;
 		}
-		pos += (16 - zero_len[i]);
+		pos += (16 - zero_len[i] - zero_len[pairs_len / 2 + i]);
 
 		// put this_mz_hex in bin
 		for (int j = 0; j<8; j++)
@@ -1245,7 +1251,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 		{
 			if (pointer[i] == 0)
 			{
-				for (int j = 0; j<4; j++)
+				for (int j = 0; j<8; j++)
 					bin[i * 8 + j + 4] = unmatch_data[unmatch_cnt * 4 + j];
 				unmatch_cnt++;
 			}
@@ -1253,20 +1259,28 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 			{
 				this_int_hex[3] = residual[match_cnt] % 16;
 				this_int_hex[2] = (residual[match_cnt] - residual[match_cnt] % 16) / 16;
-				for (int j = 0; j<4; j++)
+				this_int_hex[5] = residual[match_cnt + 1] % 16;
+				this_int_hex[4] = (residual[match_cnt + 1] - residual[match_cnt + 1] % 16) / 16;
+				this_int_hex[7] = residual[match_cnt + 2] % 16;
+				this_int_hex[6] = (residual[match_cnt + 2] - residual[match_cnt + 2] % 16) / 16;
+				for (int j = 0; j<8; j++)
 				{
 					find_int_hex[j * 2 + 1] = bin[8 * (i - pointer[i]) + 4 + j] % 16;
 					find_int_hex[j * 2] = (bin[8 * (i - pointer[i]) + 4 + j] - bin[8 * (i - pointer[i]) + 4 + j] % 16) / 16;
 				}
 				this_int_hex[0] = find_int_hex[0];
 				this_int_hex[1] = find_int_hex[1];
-				this_int_hex[4] = find_int_hex[4];
-				this_int_hex[5] = find_int_hex[5];
-				this_int_hex[6] = find_int_hex[6];
-				this_int_hex[7] = find_int_hex[7];
-				match_cnt++;
+				this_int_hex[8] = find_int_hex[8];
+				this_int_hex[9] = find_int_hex[9];
+				this_int_hex[10] = find_int_hex[10];
+				this_int_hex[11] = find_int_hex[11];
+				this_int_hex[12] = find_int_hex[12];
+				this_int_hex[13] = find_int_hex[13];
+				this_int_hex[14] = find_int_hex[14];
+				this_int_hex[15] = find_int_hex[15];
+				match_cnt+=3;
 
-				for (int j = 0; j<4; j++)
+				for (int j = 0; j<8; j++)
 					bin[i * 8 + j + 4] = this_int_hex[2 * j] * 16 + this_int_hex[2 * j + 1];
 
 			}
@@ -1280,7 +1294,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 		{
 			if (pointer[i] == 0)
 			{
-				for (int j = 0; j<4; j++)
+				for (int j = 0; j<8; j++)
 					bin[i * 8 + j + 4] = unmatch_data[unmatch_cnt * 4 + j];
 				unmatch_cnt++;
 			}
@@ -1292,17 +1306,25 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 				this_int_hex[4] = (residual[match_cnt + 1] - residual[match_cnt + 1] % 16) / 16;
 				this_int_hex[7] = residual[match_cnt + 2] % 16;
 				this_int_hex[6] = (residual[match_cnt + 2] - residual[match_cnt + 2] % 16) / 16;
+				this_int_hex[9] = residual[match_cnt + 3] % 16;
+				this_int_hex[8] = (residual[match_cnt + 3] - residual[match_cnt + 3] % 16) / 16;
+				this_int_hex[11] = residual[match_cnt + 4] % 16;
+				this_int_hex[10] = (residual[match_cnt + 4] - residual[match_cnt + 4] % 16) / 16;
+				this_int_hex[13] = residual[match_cnt + 5] % 16;
+				this_int_hex[12] = (residual[match_cnt + 5] - residual[match_cnt + 5] % 16) / 16;
+				this_int_hex[15] = residual[match_cnt + 6] % 16;
+				this_int_hex[14] = (residual[match_cnt + 6] - residual[match_cnt + 6] % 16) / 16;
 
-				for (int j = 0; j<4; j++)
+				for (int j = 0; j<8; j++)
 				{
 					find_int_hex[j * 2 + 1] = bin[8 * (i - pointer[i]) + 4 + j] % 16;
 					find_int_hex[j * 2] = (bin[8 * (i - pointer[i]) + 4 + j] - bin[8 * (i - pointer[i]) + 4 + j] % 16) / 16;
 				}
 				this_int_hex[0] = find_int_hex[0];
 				this_int_hex[1] = find_int_hex[1];
-				match_cnt += 3;
+				match_cnt += 7;
 
-				for (int j = 0; j<4; j++)
+				for (int j = 0; j<8; j++)
 					bin[i * 8 + j + 4] = this_int_hex[2 * j] * 16 + this_int_hex[2 * j + 1];
 
 			}
@@ -1326,7 +1348,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 	// base64 code for pairs
 	// bin to base64char
 	flen = 0;
-	base64char = base64(bin, 4 * pairs_len, &flen);
+	base64char = base64(bin, 8 * pairs_len, &flen);
 
 
 	// add child "peaks" to element "scan"
@@ -1737,8 +1759,13 @@ void FPMSDecomp(std::string input_path ,std::string output_folder)
 		scan ->QueryIntAttribute("peaksCount",&peaksCount);
 		if(peaksCount<50)
 		{}
-		else
-			DeComp::pairsDecomp(&fpR,scan,&doc);
+		else{
+
+			if (doubleprecision)
+				DeComp::pairsDecomp64(&fpR, scan, &doc);
+			else
+				DeComp::pairsDecomp(&fpR, scan, &doc);
+		}
 		scan = scan->NextSiblingElement("scan");
 		//std::cout<<i<<" ";
 	}
@@ -1949,7 +1976,6 @@ int main()
 	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
 
 	std::cout<<"end decompressing folder "<<de_input_folder_path<<std::endl;
-	
 
 	return 0;
 }
