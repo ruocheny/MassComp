@@ -19,7 +19,8 @@ To compress:
 
 To decompress
 
-`./masscomp -d fileMasscomp fileDecomp.mzXML`
+`./masscomp -d fileMasscomp fileDecomp.mzXML` for single precision
+`./masscomp -d fileMasscomp fileDecomp.mzXML -64` for double precision
 
 ### Windows system
 Current implementation of the code can be run by visual studio on windows system (we will provide a Linux and Mac implementation shortly).
