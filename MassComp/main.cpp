@@ -95,6 +95,10 @@ void Comp::arithmeticEncoder(int * ori,int ori_len,int range,int * cum_cnt,
 		lower = lower_temp;
 		upper = upper_temp;
 
+		if (upper == 3115225193){
+			int a = 0;
+		}
+
 		while((upper<=middle) || (lower>middle) || ((lower>quarter1)&&(upper<=quarter3)))
 			//while((upper<=middle) || (lower>middle))
 		{
@@ -130,26 +134,22 @@ void Comp::arithmeticEncoder(int * ori,int ori_len,int range,int * cum_cnt,
 			else if(((lower>quarter1)&&(upper<=quarter3)))// E3 condition holds
 			{
 				// rescale lower and upper
+				// print lower and upper
 				lower = (lower - quarter1) * 2;
 				upper = (upper - quarter1) * 2 + 1;
 				scale3++;
 			}
 		}
+
+		//std::cout << "upper: " << upper << " middle:" << middle << " lower:" << lower << " qt1:" << quarter1 << "qt3:" << quarter3 << std::endl;
 	}
 
-	int lower_bin[M];
-	// end encoding: send lower and scale3
-	lower_temp = lower;
-	for(int i=0;i<M;i++)
-	{
-		lower_bin[M-1-i] = lower_temp%2;
-		lower_temp = (lower_temp - lower_temp%2)/2;
-	}
+
 
 
 
 	// in order to make sure decoding, mannually add something here:
-	for(int i=0;i<20;i++)
+	for(int i=0;i<0;i++)
 	{
 		// update lower and upper
 		lower_temp = lower + floor(double((upper-lower+1)*cum_cnt[ori[i]]/total_cnt));
@@ -197,13 +197,23 @@ void Comp::arithmeticEncoder(int * ori,int ori_len,int range,int * cum_cnt,
 				scale3++;
 			}
 		}
+
+		//std::cout << "upper: " << upper << " middle:" << middle << " lower:" << lower << " qt1:" << quarter1 << "qt3:" << quarter3 << std::endl;
 	}
 
 
+	int lower_bin[M];
+	// end encoding: send lower and scale3
+	lower_temp = lower;
+	for (int i = 0; i<M; i++)
+	{
+		lower_bin[M - 1 - i] = lower_temp % 2;
+		lower_temp = (lower_temp - lower_temp % 2) / 2;
+	}
 
 	sendBit(lower_bin[0],&buffer,&buffer_len,output_bitstream,output_len);
 	for(int i=0;i<scale3;i++)
-		sendBit(scale3,&buffer,&buffer_len,output_bitstream,output_len);// how large is scale3??
+		sendBit(1 - lower_bin[0],&buffer,&buffer_len,output_bitstream,output_len);// sending complement of msbL, before was sending scale3
 	for(int i=1;i<M;i++)
 		sendBit(lower_bin[i],&buffer,&buffer_len,output_bitstream,output_len);
 
@@ -212,6 +222,10 @@ void Comp::arithmeticEncoder(int * ori,int ori_len,int range,int * cum_cnt,
 	// end encoding with zeros
 	while(buffer_len!=0)
 		Comp::sendBit(0,&buffer,&buffer_len,output_bitstream,output_len);
+
+	for (int i = 0; i < 40; i++){
+		Comp::sendBit(0, &buffer, &buffer_len, output_bitstream, output_len);
+	}
 
 
 }
@@ -267,7 +281,6 @@ void DeComp::arithmeticDecoder(uint8_t * input_bitstream,int input_len,int range
 	// ori: output original sequence
 	// ori_len: original sequence length(also=total count)
 	// m = 16 bits;
-
 	// initialization
 	int total_cnt = ori_len;
 	uint64_t lower = 0;					// lower	= 0000...0
@@ -284,6 +297,7 @@ void DeComp::arithmeticDecoder(uint8_t * input_bitstream,int input_len,int range
 	(*tag) = 0;
 	int decode_len = 0;
 	int k = 0;
+
 	getTag(input_bitstream,byte_pos,bit_pos,tag);
 
 	// start decoding
@@ -292,17 +306,22 @@ void DeComp::arithmeticDecoder(uint8_t * input_bitstream,int input_len,int range
 		// decode a symbol
 
 		k = 0;
-		while( floor(double((((*tag)-lower+1)*total_cnt-1)/(upper-lower+1))) >= cum_cnt[k])
+		while( floor(double((((*tag)-lower+1)*total_cnt-1)/(upper-lower+1))) >= cum_cnt[k]) // not sure what it means
 			k++;
 		ori[decode_len] = k-1;
 		decode_len++;
 		if(decode_len == ori_len)
 			break;
 
-		lower_temp = lower + floor((upper-lower+1)*cum_cnt[ori[decode_len-1]]/total_cnt);//
-		upper_temp = lower + floor((upper-lower+1)*cum_cnt[ori[decode_len-1]+1]/total_cnt) - 1;//
+		lower_temp = lower + floor(double(upper-lower+1)*cum_cnt[ori[decode_len-1]]/total_cnt);//
+		upper_temp = lower + floor(double(upper-lower+1)*cum_cnt[ori[decode_len-1]+1]/total_cnt) - 1;//
 		lower = lower_temp;
 		upper = upper_temp;
+
+
+		if (upper == 3115225193){
+			int a = 0;
+		}
 
 		// rescale lower and upper, update tag
 		while((upper<=middle) || (lower>middle) || ((lower>quarter1)&&(upper<=quarter3)))
@@ -751,7 +770,7 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 	// first half: front zero length; 2nd half: back zero length
 	Comp::max_zero = 0;
 	Comp::zero_len = new int[pairs_len];
-	Comp::diff_reshape = new int[pairs_len * 8];
+	Comp::diff_reshape = new int[pairs_len * 16];
 
 	Comp::this_mz_hex = new int[16];
 	Comp::last_mz_hex = new int[16];
@@ -760,7 +779,7 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 
 	binChar2hex64(bin, Comp::last_mz_hex);
 
-	Comp::pointer = new int[pairs_len];
+	Comp::pointer = new int[pairs_len/2];
 	Comp::residual = new uint8_t[8 * pairs_len];
 	Comp::unmatch_data = new uint8_t[8 * pairs_len];
 	Comp::this_intensity_hex = new int[16];
@@ -789,6 +808,7 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 	{
 		Comp::flag_find_match = false;
 		binChar2hex64(bin + (i + 1) * 8, Comp::this_intensity_hex);
+
 		for (int j = i / 2 - 1; j >= (((i / 2 - INT_SEARCH_RANGE)<0) ? 0 : (i / 2 - INT_SEARCH_RANGE)); j--)
 		{
 			binChar2hex64(bin + (j * 2 + 1) * 8, Comp::find_intensity_hex);
@@ -828,6 +848,7 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 		{
 			// mz compression
 			binChar2hex64(bin + i * 8, Comp::this_mz_hex);
+
 			Comp::cnt = 0;
 			Comp::flag_cnt_zero = true;
 
@@ -868,6 +889,11 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 			Comp::flag_find_match = false;
 			binChar2hex64(bin + (i + 1) * 8, Comp::this_intensity_hex);
 
+			/*
+			for (int cout = 0; cout<16; cout++)
+				std::cout << this_intensity_hex[cout] << " ";
+			std::cout << std::endl;*/
+
 			for (int j = i / 2 - 1; j >= (((i / 2 - INT_SEARCH_RANGE)<0) ? 0 : (i / 2 - INT_SEARCH_RANGE)); j--)
 			{
 				binChar2hex64(bin + (j * 2 + 1) * 8, Comp::find_intensity_hex);
@@ -897,8 +923,10 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 			if (Comp::flag_find_match == false)
 			{
 				Comp::pointer[i / 2] = 0;
-				for (int i_unmatch = 0; i_unmatch<8; i_unmatch++)
-					Comp::unmatch_data[unmatch_len * 8 + i_unmatch] = bin[8  * (i + 1) + i_unmatch];
+				for (int i_unmatch = 0; i_unmatch < 8; i_unmatch++){
+
+					Comp::unmatch_data[unmatch_len * 8 + i_unmatch] = bin[8 * (i + 1) + i_unmatch];
+				}
 				unmatch_len++;
 			}
 		}
@@ -911,6 +939,7 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 		{
 			// mz compression
 			binChar2hex64(bin + i * 8, Comp::this_mz_hex);
+
 			Comp::cnt = 0;
 			Comp::flag_cnt_zero = true;
 
@@ -951,6 +980,7 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 			Comp::flag_find_match = false;
 			binChar2hex64(bin + (i + 1) * 8, Comp::this_intensity_hex);
 
+
 			for (int j = i / 2 - 1; j >= (((i / 2 - INT_SEARCH_RANGE)<0) ? 0 : (i / 2 - INT_SEARCH_RANGE)); j--)
 			{
 				binChar2hex64(bin + (j * 2 + 1) * 8, Comp::find_intensity_hex);
@@ -974,9 +1004,11 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 			}
 			if (Comp::flag_find_match == false)
 			{
+
 				Comp::pointer[i / 2] = 0;
-				for (int i_unmatch = 0; i_unmatch<8; i_unmatch++)
+				for (int i_unmatch = 0; i_unmatch < 8; i_unmatch++){
 					Comp::unmatch_data[unmatch_len * 8 + i_unmatch] = bin[8 * (i + 1) + i_unmatch];
+				}
 				unmatch_len++;
 			}
 		}
@@ -1018,7 +1050,8 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 
 
 	// check error
-	/*std::cout<<"check error"<<std::endl;
+	/*
+	std::cout<<"check error"<<std::endl;
 
 	std::cout<<std::endl<<std::endl<<"zero_len"<<std::endl;
 	for(int i=0;i<pairs_len/2;i++)
@@ -1026,8 +1059,8 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 
 	std::cout<<std::endl<<std::endl<<"diff_reshape"<<std::endl;
 	for(int i=0;i<Comp::diff_reshape_len;i++)
-	std::cout<<Comp::diff_reshape[i]<<" ";*/
-
+	std::cout<<Comp::diff_reshape[i]<<" ";
+	*/
 
 
 	// block 3: intensity
@@ -1042,6 +1075,9 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 	Comp::cum_cnt = new int[arith_range + 2];
 	Comp::arithmeticEncoder(Comp::pointer, pairs_len / 2, arith_range,
 		Comp::cum_cnt, Comp::output_bitstream, Comp::output_len);
+	//int* temp_ptr = new int[pairs_len];
+	//DeComp::arithmeticDecoder(output_bitstream, *Comp::output_len,
+		//arith_range, Comp::cum_cnt, temp_ptr, pairs_len / 2);
 	fwrite(Comp::cum_cnt, sizeof(int), arith_range + 2, fpW);
 	fwrite(Comp::output_len, sizeof(int), 1, fpW);
 	fwrite(Comp::output_bitstream, sizeof(uint8_t), (*Comp::output_len), fpW);
@@ -1052,14 +1088,17 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 
 	// unmatch_data
 	fwrite(&unmatch_len, sizeof(int), 1, fpW);
-	fwrite(Comp::unmatch_data, sizeof(uint8_t), unmatch_len * 4, fpW);
+	fwrite(Comp::unmatch_data, sizeof(uint8_t), unmatch_len * 8, fpW);
 
 
 
 	// check error
-	/*std::cout<<std::endl<<std::endl<<"pointer"<<std::endl;
-	for(int i=0;i<pairs_len/2;i++)
-	std::cout<<Comp::pointer[i]<<" ";
+	/*
+	std::cout<<std::endl<<std::endl<<"pointer"<<std::endl;
+	for (int i = 0; i < pairs_len / 2; i++){
+		std::cout << Comp::pointer[i] << " ";
+		std::cout << temp_ptr[i] << std::endl;
+	}
 	std::cout<<std::endl<<std::endl<<"residual"<<std::endl;
 	for(int i=0;i<match_len;i++)
 	std::cout<<(int)Comp::residual[i]<<" ";
@@ -1124,7 +1163,8 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 
 
 	// check error
-	/*std::cout<<"check error"<<std::endl;
+	/*
+	std::cout<<"check error"<<std::endl;
 
 	std::cout<<std::endl<<std::endl<<"zero_len"<<std::endl;
 	for(int i=0;i<pairs_len/2;i++)
@@ -1139,7 +1179,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 	last_mz_hex = new int[16];
 	this_mz_hex = new int[16];
 	diff_hex = new int[16];
-	bin = new unsigned char[pairs_len * 8];
+	bin = new unsigned char[pairs_len * 16];
 	pos = 0;
 
 
@@ -1184,15 +1224,17 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 
 		// put this_mz_hex in bin
 		for (int j = 0; j<8; j++)
-			bin[8 * i + j] = this_mz_hex[j * 2] * 16 + this_mz_hex[j * 2 + 1];
+			bin[16 * i + j] = this_mz_hex[j * 2] * 16 + this_mz_hex[j * 2 + 1];
 
 		for (int j = 0; j<16; j++)
 			last_mz_hex[j] = this_mz_hex[j];
 
 
 		// check error
-		//for(int cout=0;cout<8;cout++)
-		//std::cout<<this_mz_hex[cout]<<" ";
+		/*
+		for(int cout=0;cout<16;cout++)
+		std::cout<<this_mz_hex[cout]<<" ";
+		std::cout << std::endl;*/
 	}
 
 
@@ -1220,19 +1262,20 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 
 	// unmatch_data
 	fread(&unmatch_len, sizeof(int), 1, *fp);
-	unmatch_data = new uint8_t[unmatch_len * 4];
-	fread(unmatch_data, sizeof(uint8_t), unmatch_len * 4, *fp);
+	unmatch_data = new uint8_t[unmatch_len * 8];
+	fread(unmatch_data, sizeof(uint8_t), unmatch_len * 8, *fp);
 
 
 	// check error
-	/*std::cout<<std::endl<<std::endl<<"pointer"<<std::endl;
+	/*
+	std::cout<<std::endl<<std::endl<<"pointer"<<std::endl;
 	for(int i=0;i<pairs_len/2;i++)
 	std::cout<<pointer[i]<<" ";
 	std::cout<<std::endl<<std::endl<<"residual"<<std::endl;
 	for(int i=0;i<match_len;i++)
 	std::cout<<(int)residual[i]<<" ";
 	std::cout<<std::endl<<std::endl<<"unmatch_data"<<std::endl;
-	for(int i=0;i<unmatch_len*4;i++)
+	for(int i=0;i<unmatch_len*8;i++)
 	std::cout<<(int)unmatch_data[i]<<" ";*/
 
 
@@ -1248,15 +1291,19 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 		// type 0: match 0:1,4:7
 
 		for (int i = 0; i<pairs_len / 2; i++)
-		{
+		{ 
 			if (pointer[i] == 0)
 			{
-				for (int j = 0; j<8; j++)
-					bin[i * 8 + j + 4] = unmatch_data[unmatch_cnt * 4 + j];
+				for (int j = 0; j < 8; j++){
+
+					bin[i * 16 + j + 8] = unmatch_data[unmatch_cnt * 8 + j];
+				}
+
 				unmatch_cnt++;
 			}
 			else
 			{
+				// possible errors?
 				this_int_hex[3] = residual[match_cnt] % 16;
 				this_int_hex[2] = (residual[match_cnt] - residual[match_cnt] % 16) / 16;
 				this_int_hex[5] = residual[match_cnt + 1] % 16;
@@ -1265,8 +1312,8 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 				this_int_hex[6] = (residual[match_cnt + 2] - residual[match_cnt + 2] % 16) / 16;
 				for (int j = 0; j<8; j++)
 				{
-					find_int_hex[j * 2 + 1] = bin[8 * (i - pointer[i]) + 4 + j] % 16;
-					find_int_hex[j * 2] = (bin[8 * (i - pointer[i]) + 4 + j] - bin[8 * (i - pointer[i]) + 4 + j] % 16) / 16;
+					find_int_hex[j * 2 + 1] = bin[16 * (i - pointer[i]) + 8 + j] % 16;
+					find_int_hex[j * 2] = (bin[16 * (i - pointer[i]) + 8 + j] - bin[16 * (i - pointer[i]) + 8 + j] % 16) / 16;
 				}
 				this_int_hex[0] = find_int_hex[0];
 				this_int_hex[1] = find_int_hex[1];
@@ -1280,9 +1327,15 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 				this_int_hex[15] = find_int_hex[15];
 				match_cnt+=3;
 
-				for (int j = 0; j<8; j++)
-					bin[i * 8 + j + 4] = this_int_hex[2 * j] * 16 + this_int_hex[2 * j + 1];
+				for (int j = 0; j < 8; j++){
 
+					bin[i * 16 + j + 8] = this_int_hex[2 * j] * 16 + this_int_hex[2 * j + 1];
+
+				}
+
+			}
+			if (this_int_hex[0] == 15 && this_int_hex[1] == 13){
+				int a = 0;
 			}
 		}
 
@@ -1295,8 +1348,9 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 			if (pointer[i] == 0)
 			{
 				for (int j = 0; j<8; j++)
-					bin[i * 8 + j + 4] = unmatch_data[unmatch_cnt * 4 + j];
+					bin[i * 16 + j + 8] = unmatch_data[unmatch_cnt * 8 + j];
 				unmatch_cnt++;
+
 			}
 			else
 			{
@@ -1317,15 +1371,17 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 
 				for (int j = 0; j<8; j++)
 				{
-					find_int_hex[j * 2 + 1] = bin[8 * (i - pointer[i]) + 4 + j] % 16;
-					find_int_hex[j * 2] = (bin[8 * (i - pointer[i]) + 4 + j] - bin[8 * (i - pointer[i]) + 4 + j] % 16) / 16;
+					find_int_hex[j * 2 + 1] = bin[16 * (i - pointer[i]) + 8 + j] % 16;
+					find_int_hex[j * 2] = (bin[16 * (i - pointer[i]) + 8 + j] - bin[16 * (i - pointer[i]) + 8 + j] % 16) / 16;
 				}
 				this_int_hex[0] = find_int_hex[0];
 				this_int_hex[1] = find_int_hex[1];
 				match_cnt += 7;
 
 				for (int j = 0; j<8; j++)
-					bin[i * 8 + j + 4] = this_int_hex[2 * j] * 16 + this_int_hex[2 * j + 1];
+					bin[i * 16 + j + 8] = this_int_hex[2 * j] * 16 + this_int_hex[2 * j + 1];
+
+				
 
 			}
 		}
@@ -1679,7 +1735,7 @@ void FPMSComp(std::string input_path, std::string output_folder)
 	fwrite(&scanCount,sizeof(int),1,fpW);
 	int peaksCount;
 
-	for(int cnt=0;cnt<scanCount;cnt++)
+	for (int cnt = 0; cnt<scanCount; cnt++)
 	{
 		peaks = scan -> FirstChildElement("peaks");
 		// pairsComp and delete
@@ -1692,7 +1748,7 @@ void FPMSComp(std::string input_path, std::string output_folder)
 			Comp::pairsComp(fpW,peaks);
 			peaks -> SetText("");
 		}
-		//std::cout<<cnt+1<<" ";
+		//std::cout<<cnt+1<<std::endl;
 		if(cnt<scanCount-1)
 			scan = scan -> NextSiblingElement();
 	}
@@ -1767,7 +1823,7 @@ void FPMSDecomp(std::string input_path ,std::string output_folder)
 				DeComp::pairsDecomp(&fpR, scan, &doc);
 		}
 		scan = scan->NextSiblingElement("scan");
-		//std::cout<<i<<" ";
+		//std::cout<<i+1<<std::endl;
 	}
 
 	std::cout<<"end decompressing"<<std::endl;
@@ -1840,7 +1896,7 @@ void CompCmp(char * folder_in,char * folder_out,char * filename)
 				std::cout<<"wrong decompression at 'scanNum="<<i+1<<"', 'binNum="<<j+1<<"'"
 					<<std::endl<<"original bin is "<<(int)bin_ori[j]<<" and decompressed bin is"<<(int)bin_dc[j]
 				<<std::endl<<std::endl;
-				break;
+				//break;
 			}
 		}
 		// turn to next scan
@@ -1856,8 +1912,17 @@ int main()
 { 	
 
 	/*	comp	*/
+	
+	/*
+	char* in_folder = "raw3/";
+	char* out_folder = "decompressoutputraw3/";
+	char* fname = "110620_fract_scxB05";
 
+	CompCmp(in_folder, out_folder, fname);
+	while (1);
+	*/
 
+	
 	system("dir/s/b *.mzXML > mzXML_dir.txt");
 	// input the MassIVE id
 	std::string input_folder_path;
@@ -1913,7 +1978,6 @@ int main()
 	//finish=clock();
 	//totaltime=(double)(finish-start)/CLOCKS_PER_SEC;
 	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
-
 	std::cout<<"end compressing folder "<<input_folder_path<<std::endl<<std::endl;
 
 	
@@ -1976,6 +2040,15 @@ int main()
 	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
 
 	std::cout<<"end decompressing folder "<<de_input_folder_path<<std::endl;
+
+	char* in_folder = "raw4/";
+	char* out_folder = "decompressoutputraw4/";
+	char* fname = "ADH_100126_mix";
+
+	CompCmp(in_folder, out_folder, fname);
+	int temp2;
+	std::cin>>temp2;
+
 
 	return 0;
 }
