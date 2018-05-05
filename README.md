@@ -19,7 +19,7 @@ To compress:
 
 To decompress
 
-`./masscomp -d fileMasscomp fileDecomp.mzXML` for single precision
+`./masscomp -d fileMasscomp fileDecomp.mzXML` for single precision and
 `./masscomp -d fileMasscomp fileDecomp.mzXML -64` for double precision
 
 ### Windows system
