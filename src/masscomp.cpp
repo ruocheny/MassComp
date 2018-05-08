@@ -199,16 +199,6 @@ void Comp::arithmeticEncoder(int * ori,int ori_len,int range,int * cum_cnt,
 		}
 	}
 
-	int lower_bin[M];
-	// end encoding: send lower and scale3
-	lower_temp = lower;
-	for(int i=0;i<M;i++)
-	{
-		lower_bin[M-1-i] = lower_temp%2;
-		lower_temp = (lower_temp - lower_temp%2)/2;
-	}
-
-
 
 	// in order to make sure decoding, mannually add something here:
 	for(int i=0;i<0;i++)
@@ -1712,18 +1702,29 @@ int main(int argc,char* argv[])
 
 		XMLDocument doc;
 		XMLError eResult = doc.LoadFile(input_path.c_str());
+		
 		XMLElement * mzXML = doc.RootElement();
+
 		XMLElement * msRun = mzXML -> FirstChildElement("msRun");
+		
 		XMLElement * scan = msRun -> FirstChildElement("scan");
+		
 		XMLElement * peaks = scan -> FirstChildElement("peaks");
+		
 		int scanCount = 0;
 		msRun->QueryIntAttribute("scanCount",&scanCount);
 		
 		
 		// check for scan precision
 		int precision = 0;
+		
 		peaks->QueryIntAttribute("precision", &precision);
-		doubleprecision = (precision == 64);
+		
+		std::cout<<precision<<std::endl;
+		if (precision == 64)
+			doubleprecision = 1;
+		else
+			doubleprecision = 0;
 
 
 		FILE * fpW = fopen(output_pairs.c_str(),"wb");
@@ -1732,6 +1733,8 @@ int main(int argc,char* argv[])
 
 		for(int cnt=0;cnt<scanCount;cnt++)
 		{
+			
+			//std::cout<<cnt<<std::endl;
 			peaks = scan -> FirstChildElement("peaks");
 			// pairsComp and delete
 			scan -> QueryIntAttribute("peaksCount",&peaksCount);

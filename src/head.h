@@ -5,6 +5,8 @@ Ruochen Yang
 email: rcyang624@126.com
 */
 
+#define _FILE_OFFSET_BITS 64
+
 #include <iostream>
 #include <fstream>
 #include <ostream>
@@ -28,7 +30,7 @@ email: rcyang624@126.com
 using namespace tinyxml2;
 
 
-bool doubleprecision;
+int doubleprecision;
 
 namespace Comp
 {

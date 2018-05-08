@@ -21,6 +21,7 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
+#define _FILE_OFFSET_BITS 64
 #include "tinyxml2.h"
 
 #include <new>		// yes, this one new style header, is in the Android SDK.
@@ -2187,15 +2188,15 @@ XMLError XMLDocument::LoadFile( FILE* fp )
 {
     Clear();
 
-    fseek( fp, 0, SEEK_SET );
+    fseeko( fp, 0, SEEK_SET );
     if ( fgetc( fp ) == EOF && ferror( fp ) != 0 ) {
         SetError( XML_ERROR_FILE_READ_ERROR, 0, 0, 0 );
         return _errorID;
     }
 
-    fseek( fp, 0, SEEK_END );
-    const long filelength = ftell( fp );
-    fseek( fp, 0, SEEK_SET );
+    fseeko( fp, 0, SEEK_END );
+    const long filelength = ftello( fp );
+    fseeko( fp, 0, SEEK_SET );
     if ( filelength == -1L ) {
         SetError( XML_ERROR_FILE_READ_ERROR, 0, 0, 0 );
         return _errorID;
