@@ -30,7 +30,7 @@ email: rcyang624@126.com
 using namespace tinyxml2;
 
 
-int doubleprecision;
+//int doubleprecision;
 
 namespace Comp
 {

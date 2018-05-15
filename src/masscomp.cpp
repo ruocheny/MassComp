@@ -1698,19 +1698,25 @@ int main(int argc,char* argv[])
 		std::string output_pairs = "pairsCompressed.bin";
 		std::string output_xml = "struct.xml";
 
-		//std::cout<<"start compressing "<<input_path<<std::endl;
+		std::cout<<"start compressing "<<input_path<<std::endl;
 
 		XMLDocument doc;
 		XMLError eResult = doc.LoadFile(input_path.c_str());
 		
+		std::cout<<(long)eResult<<std::endl;
 		XMLElement * mzXML = doc.RootElement();
 
+		std::cout<<(long)mzXML<<std::endl;
+		
 		XMLElement * msRun = mzXML -> FirstChildElement("msRun");
 		
+		std::cout<<(long)msRun<<std::endl;
 		XMLElement * scan = msRun -> FirstChildElement("scan");
 		
+		std::cout<<(long)scan<<std::endl;
 		XMLElement * peaks = scan -> FirstChildElement("peaks");
 		
+		std::cout<<(long)peaks<<std::endl;
 		int scanCount = 0;
 		msRun->QueryIntAttribute("scanCount",&scanCount);
 		
@@ -1721,6 +1727,7 @@ int main(int argc,char* argv[])
 		peaks->QueryIntAttribute("precision", &precision);
 		
 		std::cout<<precision<<std::endl;
+		int doubleprecision = 0;
 		if (precision == 64)
 			doubleprecision = 1;
 		else
@@ -1733,13 +1740,11 @@ int main(int argc,char* argv[])
 
 		for(int cnt=0;cnt<scanCount;cnt++)
 		{
-			
-			//std::cout<<cnt<<std::endl;
 			peaks = scan -> FirstChildElement("peaks");
 			// pairsComp and delete
 			scan -> QueryIntAttribute("peaksCount",&peaksCount);
 			if(peaksCount>=50)
-				{
+			{
 				if (doubleprecision)
 					Comp::pairsComp64(fpW, peaks);
 				else
@@ -1762,9 +1767,16 @@ int main(int argc,char* argv[])
 
 	else if(operations=="-d")
 		// decompress
-	{
-		if(argv[4]&&argv[4]=="-64")
-			doubleprecision = 1;
+	{	
+		int doubleprecision = 0;
+		
+		std::string prec;
+		if(argv[4]){
+			prec = argv[4];
+			if(prec == "-64")
+				doubleprecision = 1;
+		
+		}
 		std::string input_path = argv[2];
 		std::string output_path = argv[3];
 		std::string command_uzip = "tar -zxvf "+input_path;

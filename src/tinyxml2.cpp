@@ -962,8 +962,9 @@ const XMLElement* XMLNode::LastChildElement( const char* name ) const
 
 const XMLElement* XMLNode::NextSiblingElement( const char* name ) const
 {
-    for( const XMLNode* node = _next; node; node = node->_next ) {
-        const XMLElement* element = node->ToElementWithName( name );
+	const XMLNode* elementnode;
+    for( elementnode = _next; elementnode; elementnode = elementnode->_next ) {
+        const XMLElement* element = elementnode->ToElementWithName( name );
         if ( element ) {
             return element;
         }
