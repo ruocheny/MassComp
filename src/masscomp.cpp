@@ -14,7 +14,7 @@ email: rcyang624@126.com
 #define MAX_PATH 200
 #endif
 
-// interger implementation of arithmetic coding: 
+// interger implementation of arithmetic coding:
 // M is the lower,upper,tag's binary length
 #ifndef M
 //#define M 16
@@ -94,7 +94,7 @@ void Comp::sendBit(int type,uint8_t * buffer,int * buffer_len,uint8_t * output_b
 {
 	(*buffer) <<= 1;
 	(*buffer_len)++;
-	if(type==1)		
+	if(type==1)
 		(*buffer) |= 0x01;
 	else if(type==0)
 		(*buffer) |= 0x00;
@@ -373,7 +373,7 @@ void Comp::pairsComp(FILE * fpW,XMLElement * peaks)
 				if (Comp::flag_cnt_zero)
 					Comp::cnt++;
 				else
-				{				
+				{
 					Comp::diff_reshape[Comp::diff_reshape_len] = Comp::diff[j];
 					Comp::diff_reshape_len++;
 				}
@@ -433,7 +433,7 @@ void Comp::pairsComp(FILE * fpW,XMLElement * peaks)
 				if (Comp::flag_cnt_zero)
 					Comp::cnt++;
 				else
-				{				
+				{
 					Comp::diff_reshape[Comp::diff_reshape_len] = Comp::diff[j];
 					Comp::diff_reshape_len++;
 				}
@@ -489,7 +489,7 @@ void Comp::pairsComp(FILE * fpW,XMLElement * peaks)
 	// block 1: pairs_len
 	fwrite(&pairs_len,sizeof(int),1,fpW);
 
-	// block 2: m/z 
+	// block 2: m/z
 	// arithmetic encoding for zero_len
 	Comp::output_bitstream = new uint8_t[pairs_len];
 	Comp::output_len = new int;
@@ -642,7 +642,7 @@ void DeComp::arithmeticDecoder(uint8_t * input_bitstream,int input_len,int range
 	uint64_t lower = 0;					// lower	= 0000...0
 	uint64_t upper = pow(2,M)-1;		// upper	= 1111...1
 	uint64_t quarter1 = upper / 4 + 1;	// quarter1 = 0100...0
-	uint64_t middle = quarter1 * 2;		// middle	= 1000...0 
+	uint64_t middle = quarter1 * 2;		// middle	= 1000...0
 	uint64_t quarter3 = quarter1 * 3;	//quarter3	= 1100...0
 	uint64_t lower_temp,upper_temp = 0;
 	int * byte_pos = new int;
@@ -1002,7 +1002,7 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 	// block 1: pairs_len
 	fwrite(&pairs_len, sizeof(int), 1, fpW);
 
-	// block 2: m/z 
+	// block 2: m/z
 	// arithmetic coding for zero_len
 	Comp::output_bitstream = new uint8_t[pairs_len*2];
 	Comp::output_len = new int;
@@ -1102,9 +1102,13 @@ void Comp::pairsComp64(FILE * fpW, XMLElement * peaks)
 
 }
 
+double timer1;
+double timer2;
+
 void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 {
 
+	//double start = std::clock();
 	fread(&pairs_len, sizeof(int), 1, *fp);
 
 	if (pairs_len<50)
@@ -1120,12 +1124,15 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 	fread(input_bitstream, sizeof(uint8_t), input_len, *fp);
 
 	zero_len = new int[pairs_len];
+
+	//timer1 += (std::clock() - start) / (double)CLOCKS_PER_SEC;
 	DeComp::arithmeticDecoder(input_bitstream, input_len,
 		range, cum_cnt, zero_len, pairs_len);
+ 	//start = std::clock();
 	fread(&diff_reshape_len, sizeof(int), 1, *fp);
 	uint8_t * diff_reshape = new uint8_t[(int)ceil((double)diff_reshape_len / 2)];
 	fread(diff_reshape, sizeof(uint8_t), (int)ceil((double)diff_reshape_len / 2), *fp);
-
+	//timer1 += (std::clock() - start) / (double)CLOCKS_PER_SEC;
 	diff_reshape_hex = new int[diff_reshape_len + 10];
 	for (int i = 0; i<(int)ceil((double)diff_reshape_len / 2); i++)
 	{
@@ -1196,6 +1203,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 		pos += (16 - zero_len[i] - zero_len[pairs_len / 2 + i]);
 
 		// put this_mz_hex in bin
+
 		for (int j = 0; j<8; j++)
 			bin[16 * i + j] = this_mz_hex[j * 2] * 16 + this_mz_hex[j * 2 + 1];
 
@@ -1210,7 +1218,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 		std::cout << std::endl;*/
 	}
 
-
+	//start = std::clock();
 
 	// decompress intensity block
 	// read data
@@ -1223,12 +1231,15 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 	input_bitstream2 = new uint8_t[input_len2];
 	fread(input_bitstream2, sizeof(uint8_t), input_len2, *fp);
 
+	//timer1 += (std::clock() - start) / (double)CLOCKS_PER_SEC;
 	pointer = new int[pairs_len / 2];
 	//int * zero_len = new int[pairs_len/2];
 	DeComp::arithmeticDecoder(input_bitstream2, input_len,
 		range, cum_cnt, pointer, pairs_len / 2);
 
 	// residual
+	//start = std::clock();
+
 	fread(&match_len, sizeof(int), 1, *fp);
 	residual = new uint8_t[match_len];
 	fread(residual, sizeof(uint8_t), match_len, *fp);
@@ -1238,6 +1249,8 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 	unmatch_data = new uint8_t[unmatch_len * 8];
 	fread(unmatch_data, sizeof(uint8_t), unmatch_len * 8, *fp);
 
+	//timer1 += (std::clock() - start) / (double)CLOCKS_PER_SEC;
+	//std::cout<<dur1<<" and " << dur2<<std::endl;
 
 	// check error
 	/*
@@ -1264,13 +1277,15 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 		// type 0: match 0:1,4:7
 
 		for (int i = 0; i<pairs_len / 2; i++)
-		{ 
+		{
 			if (pointer[i] == 0)
 			{
 				for (int j = 0; j < 8; j++){
 
 					bin[i * 16 + j + 8] = unmatch_data[unmatch_cnt * 8 + j];
+
 				}
+
 
 				unmatch_cnt++;
 			}
@@ -1322,6 +1337,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 			{
 				for (int j = 0; j<8; j++)
 					bin[i * 16 + j + 8] = unmatch_data[unmatch_cnt * 8 + j];
+
 				unmatch_cnt++;
 
 			}
@@ -1354,7 +1370,7 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 				for (int j = 0; j<8; j++)
 					bin[i * 16 + j + 8] = this_int_hex[2 * j] * 16 + this_int_hex[2 * j + 1];
 
-				
+
 
 			}
 		}
@@ -1377,12 +1393,12 @@ void DeComp::pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 	// base64 code for pairs
 	// bin to base64char
 	flen = 0;
-	base64char = base64(bin, 8 * pairs_len, &flen);
+	//base64char = base64(bin, 8 * pairs_len, &flen);
 
 
 	// add child "peaks" to element "scan"
-	XMLElement * peaks = scan->FirstChildElement("peaks");
-	peaks->SetText(base64char);
+	//XMLElement * peaks = scan->FirstChildElement("peaks");
+	//peaks->SetText(base64char);
 	//peaks -> SetText(base64char);
 	//peaks -> SetAttribute("precision",32);
 	//peaks -> SetAttribute("byteOrder","network");
@@ -1687,7 +1703,7 @@ void DeComp::pairsDecomp(FILE ** fp, XMLElement * scan, XMLDocument * doc)
 
 
 int main(int argc,char* argv[])
-{ 	
+{
 	std::string operations = argv[1];
 	if(operations=="-c")
 		// compress
@@ -1702,30 +1718,24 @@ int main(int argc,char* argv[])
 
 		XMLDocument doc;
 		XMLError eResult = doc.LoadFile(input_path.c_str());
-		
-		std::cout<<(long)eResult<<std::endl;
+
 		XMLElement * mzXML = doc.RootElement();
 
-		std::cout<<(long)mzXML<<std::endl;
-		
+
 		XMLElement * msRun = mzXML -> FirstChildElement("msRun");
-		
-		std::cout<<(long)msRun<<std::endl;
+
 		XMLElement * scan = msRun -> FirstChildElement("scan");
-		
-		std::cout<<(long)scan<<std::endl;
 		XMLElement * peaks = scan -> FirstChildElement("peaks");
-		
-		std::cout<<(long)peaks<<std::endl;
+
 		int scanCount = 0;
 		msRun->QueryIntAttribute("scanCount",&scanCount);
-		
-		
+
+
 		// check for scan precision
 		int precision = 0;
-		
+
 		peaks->QueryIntAttribute("precision", &precision);
-		
+
 		std::cout<<precision<<std::endl;
 		int doubleprecision = 0;
 		if (precision == 64)
@@ -1762,21 +1772,15 @@ int main(int argc,char* argv[])
 		std::string tar_command = "tar czvf "+output_path+" struct.xml pairsCompressed.bin --remove-files";
 		system(tar_command.c_str());
 
-		
+
 	}
 
 	else if(operations=="-d")
 		// decompress
-	{	
+	{
 		int doubleprecision = 0;
-		
-		std::string prec;
-		if(argv[4]){
-			prec = argv[4];
-			if(prec == "-64")
-				doubleprecision = 1;
-		
-		}
+		timer1 = 0;
+		timer2 = 0;
 		std::string input_path = argv[2];
 		std::string output_path = argv[3];
 		std::string command_uzip = "tar -zxvf "+input_path;
@@ -1788,6 +1792,16 @@ int main(int argc,char* argv[])
 		XMLElement * mzXML = doc.RootElement();
 		XMLElement * msRun = mzXML -> FirstChildElement("msRun");
 		XMLElement * scan = msRun -> FirstChildElement("scan");
+
+		XMLElement * peaks = scan -> FirstChildElement("peaks");
+
+		int precision = 0;
+
+		peaks->QueryIntAttribute("precision", &precision);
+		std::cout<<precision<<std::endl;
+		if(precision == 64){
+			doubleprecision = 1;
+		}
 		//XMLElement * peaks = scan -> FirstChildElement("peaks");
 		int scanCount;
 		int peaksCount;
@@ -1812,19 +1826,19 @@ int main(int argc,char* argv[])
 			scan = scan->NextSiblingElement("scan");
 			//std::cout<<i<<" ";
 		}
-
+		std::cout<<timer1<<" and "<<timer2<<std::endl;
 		//std::cout<<"end decompressing"<<std::endl;
 		//std::string path_decompress = "decmp.mzxml";
 		doc.SaveFile(output_path.c_str());
 		fclose(fpR);
-		std::string command_rm = "rm pairsCompressed.bin struct.xml "+input_path;
-		system(command_rm.c_str());
+		//std::string command_rm = "rm pairsCompressed.bin struct.xml "+input_path;
+		//system(command_rm.c_str());
 	}
 
 	else if(operations=="-cmp")
 		// compare the original file and the decompressed file
-		// note: in the compression and decompression processes, 
-		// only the mz-int pairs are extracted and compressed, so here we only need to check if the pairs are same or not 
+		// note: in the compression and decompression processes,
+		// only the mz-int pairs are extracted and compressed, so here we only need to check if the pairs are same or not
 		// mz-int pairs are encoded with base 64
 	{
 		std::string ori_filename = argv[2];

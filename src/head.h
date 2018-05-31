@@ -16,6 +16,7 @@ email: rcyang624@126.com
 #include <limits.h>
 #include <math.h>
 #include <cmath>
+#include <ctime>
 #include <bitset>
 #include <stdint.h>
 #include <string.h>
@@ -74,7 +75,7 @@ namespace DeComp
 {
 	void pairsDecomp(FILE ** fp, XMLElement * scan, XMLDocument * doc);
 	void pairsDecomp64(FILE ** fp, XMLElement * scan, XMLDocument * doc);
-	
+
 	int pairs_len;
 	int range;
 	int * cum_cnt;
