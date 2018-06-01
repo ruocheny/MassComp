@@ -11,7 +11,7 @@ Download the full project.
 ### Linux system
 To compile:
 
-`g++ -o masscomp MassComp.cpp tinyxml2.cpp`
+`g++ -o masscomp masscomp.cpp tinyxml2.cpp`
 
 To compress:
 
@@ -19,8 +19,11 @@ To compress:
 
 To decompress
 
-`./masscomp -d fileMasscomp fileDecomp.mzXML` for single precision and
-`./masscomp -d fileMasscomp fileDecomp.mzXML -64` for double precision
+`./masscomp -d fileMasscomp fileDecomp.mzXML`
+
+To compare
+
+`./masscomp -cmp fileOri.mzXML fileDecomp.mzXML`
 
 ### Windows system
 Current implementation of the code can be run by visual studio on windows system (we will provide a Linux and Mac implementation shortly).
