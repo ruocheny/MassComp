@@ -1998,7 +1998,8 @@ int main()
 	//std::string cmd_cd = "cd " + de_input_folder_path;
 	//system(cmd_cd.c_str());
 
-	std::string command_uzip = "tar -zxvf " + de_input_folder_path +"/*.tar.gz";
+	//ls *.gz | xargs - n1 tar - xzf
+	std::string command_uzip = "ls " +de_input_folder_path +"/*.tar.gz | xargs -n1 tar -zxvf";
 	system(command_uzip.c_str());
 
 	system("dir/s/b *.bin > decomp_dir.txt");
