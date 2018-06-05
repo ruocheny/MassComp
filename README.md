@@ -35,6 +35,7 @@ With the hint "please input the path of files to be compressing:", input the fol
 
 With the hint "please input the path of files to be decompressing:", input the folder path "\output\MSV000080896\peak\Data_mzXML" to start decompressing. Before start the decompressing, the zip file needs an external decompression with 7zip.
 
+Note: Running the application in Windows uses gzip and requires installation of Cygwin.
 
 ## Datasets
 Datasets of mass spectrometry data can be downloaded from MassIVE https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp
