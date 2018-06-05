@@ -1756,7 +1756,11 @@ void FPMSComp(std::string input_path, std::string output_folder)
 	eResult = doc.SaveFile(output_xml.c_str());
 
 
+	
 	fclose((fpW));
+
+	std::string tar_command = "tar czvf " + output_pairs+".tar.gz " + output_pairs + " "+output_xml+" --remove-files";
+	system(tar_command.c_str());
 
 	std::cout<<"end compressing"<<std::endl;
 
@@ -1984,13 +1988,23 @@ int main()
 
 	/*	decomp	*/
 
-	system("dir/s/b *.bin > decomp_dir.txt");
 	// input the MassIVE id
 	std::string de_input_folder_path;
 	//de_input_folder_path = "\\output\\MSV000080896\\peak\\Data_mzXML";
 	std::cout<<"please input the path of files to decompressing: "<<std::endl;
 	std::cin>>de_input_folder_path;
 	std::cout<<"start decompressing folder "<<de_input_folder_path<<std::endl;
+
+	//std::string cmd_cd = "cd " + de_input_folder_path;
+	//system(cmd_cd.c_str());
+
+	std::string command_uzip = "tar -zxvf " + de_input_folder_path +"/*.tar.gz";
+	system(command_uzip.c_str());
+
+	system("dir/s/b *.bin > decomp_dir.txt");
+
+	//std::string cmd_ucd = "cd ..";
+	//system(cmd_ucd.c_str());
 	//std::string var[6] = {
 	//"\\output\\input\\MSV000080896\\peak\\Data_mzXML",
 	//"\\output\\input\\MSV000080905\\mzXML\\Plate1",
@@ -2040,14 +2054,14 @@ int main()
 	//std::cout<<"run time"<<totaltime<<"seconds"<<std::endl;
 
 	std::cout<<"end decompressing folder "<<de_input_folder_path<<std::endl;
-
+	/*
 	char* in_folder = "raw4/";
 	char* out_folder = "decompressoutputraw4/";
 	char* fname = "ADH_100126_mix";
 
 	CompCmp(in_folder, out_folder, fname);
 	int temp2;
-	std::cin>>temp2;
+	std::cin>>temp2;*/
 
 
 	return 0;
