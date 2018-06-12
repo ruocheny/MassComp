@@ -1,0 +1,8 @@
+C:\MassComp-master\MassComp\outputMSV000080896\pairsCompressed_MHB+Naf_1_T0_GA4_01_9118.bin
+C:\MassComp-master\MassComp\outputMSV000080896\pairsCompressed_MHB+Naf_1_T2_GB4_01_9122.bin
+C:\MassComp-master\MassComp\outputnumpress_sample\pairsCompressed_110620_fract_scxB05.bin
+C:\MassComp-master\MassComp\outputsample0\pairsCompressed_110620_fract_scxB05.bin
+C:\MassComp-master\MassComp\outputsample0\pairsCompressed_Decompressed_110620_fract_scxB05.bin
+C:\MassComp-master\MassComp\outputsample2\pairsCompressed_121213_PhosphoMRM_TiO2_discovery.bin
+C:\MassComp-master\MassComp\outputsample4\pairsCompressed_sample4.bin
+C:\MassComp-master\MassComp\outputsmall\pairsCompressed_110620_fract_scxB05.bin

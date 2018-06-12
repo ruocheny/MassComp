@@ -11,7 +11,7 @@ Download the full project.
 ### Linux system
 To compile:
 
-`g++ -o masscomp MassComp.cpp tinyxml2.cpp`
+`g++ -o masscomp masscomp.cpp tinyxml2.cpp`
 
 To compress:
 
@@ -20,6 +20,10 @@ To compress:
 To decompress
 
 `./masscomp -d fileMasscomp fileDecomp.mzXML`
+
+To compare
+
+`./masscomp -cmp fileOri.mzXML fileDecomp.mzXML`
 
 ### Windows system
 Current implementation of the code can be run by visual studio on windows system (we will provide a Linux and Mac implementation shortly).
@@ -31,6 +35,7 @@ With the hint "please input the path of files to be compressing:", input the fol
 
 With the hint "please input the path of files to be decompressing:", input the folder path "\output\MSV000080896\peak\Data_mzXML" to start decompressing. Before start the decompressing, the zip file needs an external decompression with 7zip.
 
+Note: Running the application in Windows uses gzip and requires installation of Cygwin.
 
 ## Datasets
 Datasets of mass spectrometry data can be downloaded from MassIVE https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp
